@@ -40,6 +40,18 @@ resource "aws_lambda_permission" "restaurants_apigw" {
 
 # --- Orders API (existing — imported) ---
 
+resource "aws_apigatewayv2_authorizer" "orders_jwt" {
+  api_id           = aws_apigatewayv2_api.orders.id
+  authorizer_type  = "JWT"
+  identity_sources = ["$request.header.Authorization"]
+  name             = "${var.app_name}-cognito-jwt"
+
+  jwt_configuration {
+    audience = [aws_cognito_user_pool_client.main.id]
+    issuer   = "https://cognito-idp.${var.aws_region}.amazonaws.com/${aws_cognito_user_pool.main.id}"
+  }
+}
+
 resource "aws_apigatewayv2_api" "orders" {
   name          = "QuickBiteOrdersAPI"
   protocol_type = "HTTP"
@@ -59,15 +71,19 @@ resource "aws_apigatewayv2_integration" "orders" {
 }
 
 resource "aws_apigatewayv2_route" "orders_post" {
-  api_id    = aws_apigatewayv2_api.orders.id
-  route_key = "POST /orders"
-  target    = "integrations/${aws_apigatewayv2_integration.orders.id}"
+  api_id             = aws_apigatewayv2_api.orders.id
+  route_key          = "POST /orders"
+  target             = "integrations/${aws_apigatewayv2_integration.orders.id}"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.orders_jwt.id
 }
 
 resource "aws_apigatewayv2_route" "orders_get" {
-  api_id    = aws_apigatewayv2_api.orders.id
-  route_key = "GET /orders"
-  target    = "integrations/${aws_apigatewayv2_integration.orders.id}"
+  api_id             = aws_apigatewayv2_api.orders.id
+  route_key          = "GET /orders"
+  target             = "integrations/${aws_apigatewayv2_integration.orders.id}"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.orders_jwt.id
 }
 
 resource "aws_apigatewayv2_stage" "orders" {
