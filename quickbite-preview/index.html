@@ -1,0 +1,185 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite Frontend Preview</title>
+  <style>
+    :root{
+      --bg:#f7f4f8; --panel:#ffffff; --soft:#f3f3f5; --soft2:#efecf1; --text:#111; --muted:#666; --brand:#8a0c58; --green:#16a34a; --yellow:#f4b400; --cyan:#37d5e8; --shadow:0 14px 34px rgba(18,18,18,.12);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f4eef4,#fafafa);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:24px}
+    button,input{font:inherit}
+    button{border:0;background:none;cursor:pointer}
+    .shell{width:min(430px,100%);height:min(932px,95vh);background:#fff;border-radius:34px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+    .topbar{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 20px 8px}
+    .time{font-weight:800;font-size:18px;margin-bottom:6px}
+    .brand{font-size:36px;line-height:1;color:var(--brand);font-weight:900}
+    .icons{display:flex;gap:12px;padding-top:8px}
+    .icons button{width:40px;height:40px;border-radius:50%;font-size:22px}
+    .screen{flex:1;overflow:auto;padding:8px 16px 14px}
+    .screen::-webkit-scrollbar{width:0;height:0}
+    .card,.search,.quickpass{background:var(--soft);border-radius:18px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .loc{display:flex;align-items:center;gap:14px}
+    .pin{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:22px}
+    .card strong,.quickpass strong{display:block;font-size:18px}
+    .card p,.quickpass p{margin:0;color:var(--muted)}
+    .chev{font-size:26px;color:#666}
+    .search{gap:12px;padding:12px 14px}
+    .search input{flex:1;border:0;outline:0;background:transparent;font-size:16px}
+    .search .icon{font-size:22px;color:var(--cyan)}
+    .cats{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:8px}
+    .cats::-webkit-scrollbar{height:0}
+    .cat{min-width:72px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#111}
+    .cat .circle{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:linear-gradient(135deg,#f3d9e7,#e9effc)}
+    .cat.active .circle{background:linear-gradient(135deg,#ad4d86,#7e0c4f);color:#fff}
+    .cat.active span:last-child{font-weight:800}
+    .promo{display:grid;grid-template-columns:1.1fr 1fr;background:linear-gradient(90deg,#f8e6ee,#f1dfe7);border-radius:22px;overflow:hidden;min-height:162px;margin:8px 0 18px}
+    .promo-copy{padding:18px}
+    .promo h2{margin:0 0 4px;font-size:22px}
+    .promo p{margin:0;font-size:17px}
+    .promo span{display:block;margin-top:4px;font-size:15px}
+    .cta{margin-top:18px;background:var(--brand);color:#fff;padding:12px 26px;border-radius:14px;font-weight:800;box-shadow:0 8px 18px rgba(138,12,88,.24)}
+    .promo-visual{display:grid;place-items:center;background:linear-gradient(160deg,#d9c1b1,#ecdacb)}
+    .bag{width:130px;height:130px;border-radius:20px;background:#c79d6e;display:grid;place-items:center;font-size:44px;box-shadow:inset 0 -18px 0 rgba(0,0,0,.08)}
+    .header{display:flex;align-items:center;justify-content:space-between;margin:8px 0 12px}
+    .header h2{margin:0;font-size:22px}
+    .viewall{color:#5a0837;font-weight:800;font-size:16px}
+    .horizontal{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+    .horizontal::-webkit-scrollbar{height:0}
+    .restaurant{min-width:274px;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e7e7ea;box-shadow:0 8px 18px rgba(18,18,18,.04)}
+    .restaurant.wide{min-width:100%;display:grid;grid-template-columns:118px 1fr}
+    .img{position:relative;min-height:126px;background-size:cover;background-position:center}
+    .badge{position:absolute;top:10px;left:10px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800;color:#fff}
+    .discount{background:var(--brand)} .bestseller{background:#21a545} .new{background:#ff8c42}
+    .heart{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.95);font-size:20px}
+    .body{padding:12px}
+    .body h3{margin:0;font-size:20px;line-height:1.1}
+    .body p{margin:4px 0 0;color:var(--muted)}
+    .footer{margin-top:4px;display:flex;justify-content:space-between;gap:8px;font-weight:600}
+    .rating{white-space:nowrap}
+    .reviews{color:var(--muted);font-weight:500}
+    .tag{color:var(--green);font-weight:800;white-space:nowrap}
+    .quickpass{gap:14px;margin:14px 0 18px}
+    .qicon{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:#fff;font-weight:900;font-size:24px}
+    .list{display:flex;flex-direction:column;gap:12px;padding-bottom:18px}
+    .bottom{display:grid;grid-template-columns:repeat(5,1fr);padding:10px 8px 18px;border-top:1px solid #e7e7ea;background:rgba(255,255,255,.96)}
+    .nav{display:flex;flex-direction:column;align-items:center;gap:6px;color:#222}
+    .nav.active{color:var(--brand)}
+    .nav .i{font-size:30px;line-height:1}
+    .overlay{position:fixed;inset:0;pointer-events:none;border:10px solid rgba(0,0,0,.08);border-radius:40px}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none}
+    .toast.show{opacity:1}
+    .focus{outline:3px solid #37d5e8;outline-offset:2px}
+  </style>
+</head>
+<body>
+  <div class="shell" id="app">
+    <div class="topbar">
+      <div><div class="time">9:41</div><div class="brand">QuickBite</div></div>
+      <div class="icons"><button data-action="notify">🔔</button><button data-action="bag">🛍️</button></div>
+    </div>
+    <div class="screen" id="screen">
+      <section class="card clickable" data-page="address"><div class="loc"><div class="pin">📍</div><div><strong>Deliver to Home</strong><p>123 Main St, Anytown, CA</p></div></div><div class="chev">⌄</div></section>
+      <section class="search clickable"><span class="icon">🔎</span><input id="search" placeholder="Search for restaurants or cuisines"><button data-action="filter">☷</button></section>
+      <section class="cats">
+        <button class="cat active" data-cat="All"><div class="circle">🍽️</div><span>All</span></button>
+        <button class="cat" data-cat="Pizza"><div class="circle">🍕</div><span>Pizza</span></button>
+        <button class="cat" data-cat="Burgers"><div class="circle">🍔</div><span>Burgers</span></button>
+        <button class="cat" data-cat="Sushi"><div class="circle">🍣</div><span>Sushi</span></button>
+        <button class="cat" data-cat="Asian"><div class="circle">🍜</div><span>Asian</span></button>
+        <button class="cat" data-cat="Coffee"><div class="circle">☕</div><span>Coffee</span></button>
+        <button class="cat" data-cat="Healthy"><div class="circle">🥗</div><span>Healthy</span></button>
+        <button class="cat" data-cat="Desserts"><div class="circle">🧁</div><span>Desserts</span></button>
+      </section>
+      <section class="promo clickable" data-page="promo"><div class="promo-copy"><h2>Free delivery</h2><p>On your first order</p><span>Over $15</span><button class="cta">Order now</button></div><div class="promo-visual"><div class="bag">🍔🥡</div></div></section>
+      <div class="header"><h2>Popular near you</h2><button class="viewall clickable" data-page="popular">View all</button></div>
+      <section class="horizontal" id="popular"></section>
+      <section class="quickpass clickable" data-page="quickpass"><div class="qicon">Q</div><div><strong>QuickPass</strong><p>Lower delivery fees. Always.</p></div><div class="chev">›</div></section>
+      <div class="header"><h2>All restaurants</h2><button class="viewall clickable" data-page="restaurants">View all</button></div>
+      <section class="list" id="list"></section>
+    </div>
+    <nav class="bottom">
+      <button class="nav active" data-page="home"><div class="i">🏠</div><span>Home</span></button>
+      <button class="nav" data-page="search"><div class="i">🔎</div><span>Search</span></button>
+      <button class="nav" data-page="orders"><div class="i">📋</div><span>Orders</span></button>
+      <button class="nav" data-page="favorites"><div class="i">💖</div><span>Favorites</span></button>
+      <button class="nav" data-page="account"><div class="i">👤</div><span>Account</span></button>
+    </nav>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    const popular = [
+      ['The Galactic Grill','20–30 min • 1.2 mi','$$ • Burgers','4.7','1,234','30% OFF','discount','https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80'],
+      ["Ocean's Eleven Sushi",'20–35 min • 1.5 mi','$$$ • Sushi','4.8','2,456','BESTSELLER','bestseller','https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80'],
+      ['Sizzle Ramen Bar','20–35 min • 2.0 mi','$$ • Ramen','4.6','987','20% OFF','discount','https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=800&q=80'],
+    ];
+    const all = [
+      ['The Burrito Bandito','Mexican','20–30 min • 1.0 mi','$$ • Burritos','4.6','3,210','20% OFF','discount','https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?auto=format&fit=crop&w=800&q=80'],
+      ['Spice Garden Bangkok','Thai','25–35 min • 1.8 mi','$$ • Thai','4.7','1,997','BESTSELLER','bestseller','https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&w=800&q=80'],
+      ['Green Fork Kitchen','Healthy','15–25 min • 0.8 mi','$$ • Bowls','4.8','1,120','NEW','new','https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=80']
+    ];
+    const popularEl = document.getElementById('popular');
+    const listEl = document.getElementById('list');
+    const search = document.getElementById('search');
+    const toast = document.getElementById('toast');
+    const screen = document.getElementById('screen');
+    let activeCat = 'All';
+    let query = '';
+    let selected = null;
+
+    function cardHTML(r, wide=false){
+      if(!wide){
+        return `<article class="restaurant clickable" data-name="${r[0]}"><div class="img" style="background-image:url('${r[7]}')"><span class="badge ${r[6]}">${r[5]}</span><button class="heart">♡</button></div><div class="body"><h3>${r[0]}</h3><p>${r[1]}</p><div class="footer"><span>${r[2]}</span><span class="rating">⭐ ${r[3]} <span class="reviews">(${r[4]})</span></span></div></div></article>`;
+      }
+      return `<article class="restaurant wide clickable" data-name="${r[0]}"><div class="img" style="background-image:url('${r[8]}')"><span class="badge ${r[7]}">${r[6]}</span></div><div class="body"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><h3>${r[0]}</h3><span class="tag">● ${r[1]}</span></div><p>${r[2]}</p><div class="footer"><span>${r[3]}</span><span class="rating">⭐ ${r[4]} <span class="reviews">(${r[5]})</span></span></div></div></article>`;
+    }
+    function render(){
+      popularEl.innerHTML = popular.map(r=>cardHTML(r)).join('');
+      const filtered = all.filter(r => {
+        const catMatch = activeCat==='All' || r[1].toLowerCase().includes(activeCat.toLowerCase());
+        const qMatch = !query || r[0].toLowerCase().includes(query.toLowerCase()) || r[1].toLowerCase().includes(query.toLowerCase());
+        return catMatch && qMatch;
+      });
+      listEl.innerHTML = filtered.map(r=>cardHTML(r,true)).join('') || '<p style="color:#777;padding:14px 0">No matches found.</p>';
+      bindClicks();
+    }
+    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); clearTimeout(showToast.t); showToast.t = setTimeout(()=>toast.classList.remove('show'), 1100); }
+    function bindClicks(){
+      document.querySelectorAll('.clickable').forEach(el => {
+        el.onclick = (e) => {
+          if (e.target.closest('.heart') || e.target.id === 'search') return;
+          const page = el.dataset.page || el.dataset.name || 'item';
+          selected = page;
+          document.querySelectorAll('.focus').forEach(x => x.classList.remove('focus'));
+          el.classList.add('focus');
+          showToast(`Clicked: ${page}`);
+          if (el.classList.contains('restaurant')) {
+            document.title = `QuickBite • ${page}`;
+          }
+        }
+      })
+      document.querySelectorAll('.heart').forEach(btn => btn.onclick = (e)=>{ e.stopPropagation(); showToast('Saved to favorites'); });
+    }
+    document.querySelectorAll('.cat').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      render();
+      showToast(activeCat);
+    }));
+    search.addEventListener('input', (e)=>{ query = e.target.value.trim(); render(); });
+    document.querySelectorAll('[data-action]').forEach(btn => btn.addEventListener('click', () => showToast(btn.dataset.action)));
+    document.querySelectorAll('.nav').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));
+      btn.classList.add('active');
+      const p = btn.dataset.page;
+      showToast(`Tab: ${p}`);
+    }));
+    render();
+  </script>
+</body>
+</html>
